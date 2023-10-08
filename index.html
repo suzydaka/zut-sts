@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Navigation Page</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS for styling -->
+    <style>
+      body {
+        background-color: #ffffff;
+      }
+      .container {
+        margin-top: 100px;
+        text-align: center;
+      }
+      .btn-custom {
+        margin: 10px;
+        padding: 15px 30px;
+        font-size: 18px;
+        border-radius: 5px;
+      }
+      .btn-scan {
+        background-color: #007bff;
+        color: #fff;
+      }
+      .btn-register {
+        background-color: #28a745;
+        color: #fff;
+      }
+
+      .cardItem {
+        width: 250px;
+        height: 100px;
+        padding: 50;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        border-radius: 10px;
+        border-color: #28a745;
+        background-color: #007bff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ZUT - Student Tracking System</h1>
+      <hr />
+
+      <div
+        style="
+          display: flex;
+          justify-content: space-around;
+          height: 100px;
+          padding: 20px;
+        "
+      >
+        <div
+          class="cardItem"
+          data-toggle="modal"
+          data-target="#markAttendanceModal"
+        >
+          <img width="50px" src="./assets/icon-attendance.png" alt="" />
+          <a
+            style="
+              text-decoration: none;
+              color: #fff;
+              font-weight: bold;
+              margin-left: 10px;
+            "
+            >Mark Attendance</a
+          >
+        </div>
+
+        <div
+          class="cardItem"
+          data-toggle="modal"
+          data-target="#registerStudentModal"
+        >
+          <img width="50px" src="./assets/register-online-icon-11.jpg" alt="" />
+          <a
+            style="
+              text-decoration: none;
+              color: #fff;
+              font-weight: bold;
+              margin-left: 10px;
+            "
+            >Register Student</a
+          >
+        </div>
+
+        <div
+          class="cardItem"
+          data-toggle="modal"
+          data-target="#studentStatusModal"
+        >
+          <img width="50px" src="./assets/status.png" alt="" />
+          <a
+            style="
+              text-decoration: none;
+              color: #fff;
+              font-weight: bold;
+              margin-left: 10px;
+            "
+            >Student Status</a
+          >
+        </div>
+
+        <div
+          class="cardItem"
+          data-toggle="modal"
+          data-target="#studentRecordsModal"
+        >
+          <img width="50px" src="./assets/records.png" alt="" />
+          <a
+            style="
+              text-decoration: none;
+              color: #fff;
+              font-weight: bold;
+              margin-left: 10px;
+            "
+            >Student Records</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALS START HERE -->
+
+    <!-- Mark Attendance Modal -->
+    <div class="modal" id="markAttendanceModal">
+      <div class="modal-dialog" style="max-width: 80%; max-height: 80%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Mark Attendance</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body" style="display: flex; justify-content: space-between; align-items: center;">
+
+            <div id="attSave" style="display: none; flex-direction: column; width: 100%; height: 250px; justify-content: center; align-items: center;">
+                <div style="width: 50%;">
+                    <h4 class="text-success">Session saved, check Student Records</h4>
+                <button id="restartMarkingBtn"type="submit" class="btn btn-warning btn-lg">
+                    Restart Attendance
+                  </button>
+                </div>
+                
+            </div>
+
+            <div style="width: 40%; padding: 20px">
+
+              <form id="markAttForm">
+                <!-- Year of Study -->
+                <div class="form-group">
+                  <label for="yearOfStudy">Year of Study</label>
+                  <select
+                    class="form-control"
+                    id="yearOfStudy"
+                    name="yearOfStudy"
+                  >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                <!-- Program of Study -->
+                <div class="form-group">
+                  <label for="programOfStudy">Program of Study</label>
+                  <select
+                    class="form-control"
+                    id="programOfStudy"
+                    name="programOfStudy"
+                  >
+                    <option value="BIT">BIT</option>
+                    <option value="BSE">BSE</option>
+                    <option value="BICT">BICT</option>
+                    <option value="BBA">BBA</option>
+                    <option value="BeEng">BeEng</option>
+                    <option value="BSC">BSC</option>
+                  </select>
+                </div>
+
+                <!-- Time and Day -->
+                <div class="form-group">
+                  <label for="timeAndDay">Time and Day</label>
+                  <input
+                    type="datetime-local"
+                    class="form-control"
+                    id="timeAndDay"
+                    name="timeAndDay"
+                  />
+                </div>
+
+                <!-- Notes/Comments -->
+                <div class="form-group">
+                  <label for="notes">Notes/Comments</label>
+                  <textarea
+                    class="form-control"
+                    id="notes"
+                    name="notes"
+                    rows="2"
+                  ></textarea>
+                </div>
+
+                <!-- Start Marking Button -->
+                <button id="startMarkingBtn"type="submit" class="btn btn-primary btn-lg">
+                  Start Marking
+                </button>
+              </form>
+
+            <div id="sessionControls" style="flex-direction: column; align-items: center; justify-content: center; padding: 50px; display: none;">
+                <button id="stopMarkingBtn"type="submit" class="btn btn-danger btn-lg my-5">
+                    Stop Attendance
+                  </button>
+
+                  <button id="saveMarkingBtn"type="submit" class="btn btn-success btn-lg  my-5">
+                    Save Attendance
+                  </button>
+            </div>
+
+            </div>
+
+            <div style="width: 60%">
+              <div style="width: 100%; height: 100%;">
+                <div id="scanner" style="display: none;">
+                    <div style="width: 100%; height: 100%; position: relative;">
+                    <video id="qr-video" width="100%" autoplay style="position: relative; z-index: 1;"></video>
+                    <div style="position: absolute; top: 10%; left: 10%; width: 80%; height: 80%; border: 2px solid white; z-index: 2;">
+                        <small class="text-light">
+                            Show your Student ID's QR Code
+                        </small>
+                        
+                    </div>
+                </div>
+                
+                
+                <div style="width: 100%; height: 100%;">
+                    <div id="qr-result" class="mt-3">
+                        <h5 class="text-warning">scan results go here...</h5>
+                    </div>
+                </div>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Student Modal -->
+    <div class="modal" id="registerStudentModal">
+      <div class="modal-dialog" style="max-width: 80%; max-height: 80%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Register Student</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body" style="display: flex; justify-content: space-between; align-items: center;">
+
+            
+
+            <div style="width: 40%; padding: 20px">
+
+              <form id="registerAttForm">
+
+                <div class="form-group">
+                    <label for="studentID">Student ID</label>
+                    <input id="student-id" type="text" placeholder="2010118" class="form-control">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="StudentFullnames">Full Names</label>
+                    <input type="text" placeholder="Njato Kabalwe" class="form-control">
+                  </div>
+
+                <!-- Year of Study -->
+                <div class="form-group">
+                  <label for="yearOfStudy">Year of Study</label>
+                  <select
+                    class="form-control"
+                    id="yearOfStudy"
+                    name="yearOfStudy"
+                  >
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+
+                <!-- Program of Study -->
+                <div class="form-group">
+                  <label for="programOfStudy">Program of Study</label>
+                  <select
+                    class="form-control"
+                    id="programOfStudy"
+                    name="programOfStudy"
+                  >
+                    <option value="BIT">BIT</option>
+                    <option value="BSE">BSE</option>
+                    <option value="BICT">BICT</option>
+                    <option value="BBA">BBA</option>
+                    <option value="BeEng">BeEng</option>
+                    <option value="BSC">BSC</option>
+                  </select>
+                </div>
+
+                
+
+               
+
+                <!-- Start Marking Button -->
+                <button id="regBtn" type="submit" class="btn btn-primary btn-lg">
+                  Register Student
+                </button>
+              </form>
+
+            
+
+            </div>
+
+            <div style="width: 60%">
+                <div id="qrContainer" style="width: 100%; height: 100%; display: none;">
+                    <div id="qr-code"></div>
+                    <button class="btn btn-secondary my-5">Download QR Code</button>
+                </div>
+              
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Status Modal -->
+    <div class="modal" id="studentStatusModal">
+      <div class="modal-dialog" style="max-width: 80%; max-height: 80%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Student Status</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              This is the Student Status modal. You can add your content here.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student Records Modal -->
+    <div class="modal" id="studentRecordsModal">
+      <div class="modal-dialog" style="max-width: 80%; max-height: 80%">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Student Records</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>
+              This is the Student Records modal. You can add your content here.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODALS END HERE -->
+
+    <!-- Include Bootstrap and Popper.js (required for Bootstrap modals) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- QR CODE MARK ATTENDANCE SCRIPTS START HERE -->
+    <!-- Include QR Code Scanner Library -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <script>
+
+        const scanner = document.getElementById('scanner');
+
+        const startMarkingBtn = document.getElementById('startMarkingBtn');
+
+        const sessionControls = document.getElementById('sessionControls');
+        const stopMarkingBtn = document.getElementById('stopMarkingBtn');
+        const saveMarkingBtn = document.getElementById('saveMarkingBtn');
+        const restartMarkingBtn = document.getElementById('restartMarkingBtn');
+        const markAttForm = document.getElementById('markAttForm');
+        const attSave = document.getElementById('attSave');
+
+
+
+        stopMarkingBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            markAttForm.style.display = 'block';
+            scanner.style.display = 'none';
+            sessionControls.style.display = 'none';
+            
+
+        });
+
+        restartMarkingBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            markAttForm.style.display = 'block';
+            scanner.style.display = 'none';
+            sessionControls.style.display = 'none';
+            attSave.style.display = 'none'
+        });
+
+        saveMarkingBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            markAttForm.style.display = 'none';
+            scanner.style.display = 'none';
+            sessionControls.style.display = 'none';
+            attSave.style.display = 'block';
+        });
+
+        startMarkingBtn.addEventListener('click', function (e){
+            e.preventDefault();
+            markAttForm.style.display = 'none';
+            scanner.style.display = 'block';
+            sessionControls.style.display = 'block';
+
+        });
+
+
+      // Function to start QR code scanning
+      function startQRScanner() {
+        const video = document.getElementById("qr-video");
+        const qrResult = document.getElementById("qr-result");
+
+        const qrScanner = new Instascan.Scanner({ video: video });
+        qrScanner.addListener("scan", function (content) {
+          qrResult.innerHTML = `QR Code Content: ${content}`;
+        });
+
+        Instascan.Camera.getCameras().then(function (cameras) {
+          if (cameras.length > 0) {
+            qrScanner.start(cameras[0]);
+          } else {
+            alert("No cameras found on this device.");
+          }
+        });
+      }
+
+      // Start QR code scanning when the page loads
+      window.onload = startQRScanner;
+      
+    </script>
+
+    <!-- Include Instascan Library (QR Code Scanner) -->
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <!-- QR CODE MARK ATTENDANCE SCRIPTS END HERE -->
+
+
+    <!-- QR CODE REGISTER STUDENT START HERE -->
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <script>
+
+        const registerAttForm = document.getElementById('registerAttForm');
+        const regBtn = document.getElementById('regBtn');
+        const qrContainer = document.getElementById('qrContainer');
+
+        regBtn.addEventListener('click', function (e){
+            e.preventDefault();
+            registerAttForm.style.display = 'none';
+            qrContainer.style.display = 'block';
+            generateQRCode();
+
+        });
+
+        // Function to generate QR code
+        function generateQRCode() {
+            var text = document.getElementById("student-id").value;
+            var qrCodeContainer = document.getElementById("qr-code");
+            qrCodeContainer.innerHTML = ""; // Clear previous QR codes
+
+            if (text.trim() !== "") {
+                var qrcode = new QRCode(qrCodeContainer, {
+                    text: text,
+                    width: 128,
+                    height: 128
+                });
+            } else {
+                alert("Please enter text for the QR code.");
+            }
+        }
+
+        // Attach click event to the "Generate QR Code" button
+        document.getElementById("generate-qr").addEventListener("click", generateQRCode);
+    </script>
+<!-- QR CODE REGISTER STUDENT START HERE -->
+
+  </body>
+</html>
