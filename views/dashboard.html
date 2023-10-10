@@ -504,11 +504,54 @@
 
       // Start QR code scanning when the page loads
       window.onload = startQRScanner;
+
+
+      // <!-- OPENING LECTURE SESSION START HERE -->
+
+    document.getElementById('markAttForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const form = event.target;
+
+      // Extract form data
+      const sessionData = {
+          year_of_study: form.yearOfStudy.value,
+          programme_of_study: form.programOfStudy.value,
+          time_and_date: form.timeAndDay.value,
+          notes_or_comments: form.notes.value,
+      };
+
+      try {
+          const response = await fetch('/lecturers/LECTURER_ID/sessions', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ session: sessionData }),
+          });
+
+          if (response.ok) {
+              alert('Lecture session created successfully!');
+          } else {
+              alert('Error creating lecture session.');
+          }
+      } catch (error) {
+          console.error(error);
+          alert('An error occurred while creating the lecture session.');
+      }
+  });
+
+// <!-- OPENING LECTURE SESSION END HERE -->
+
+
       
     </script>
 
     <!-- Include Instascan Library (QR Code Scanner) -->
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+
+    
     <!-- QR CODE MARK ATTENDANCE SCRIPTS END HERE -->
 
 
