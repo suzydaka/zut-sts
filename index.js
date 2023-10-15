@@ -6,6 +6,7 @@ const cors = require('cors');
 
 require("dotenv").config();
 const Lecturer = require("./database/models/Lecturer");
+const Session = require("./database/models/Session");
 
 const app = express();
 
@@ -122,7 +123,30 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+app.post('/add-session', async (req, res) => {
+  const { session } = req.body;
+  
 
+  console.log('saving lecture session (serverside): ', session);
 
+  // Create a new Session instance
+  const newSession = new Session({
+    year_of_study: session.year_of_study,
+    programme_of_study: session.programme_of_study,
+    time_and_date: session.time_and_date,
+    notes_or_comments: session.notes_or_comments,
+    attendees: session.attendees,
+    lecturer_id: session.lecturer_id, // Assign the lecturer ID
+  });
 
+  try {
+    // Save the session to the database
+    await newSession.save();
 
+    // Respond with a success message
+    res.status(201).json({ message: 'Lecture session created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating lecture session' });
+  }
+});
