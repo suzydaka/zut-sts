@@ -9,14 +9,23 @@ const SessionSchema = new mongoose.Schema({
   attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
 });
 
-// Define the main schema for Lecturer
-const LecturerSchema = new mongoose.Schema({
-  email: String,
-  password: String,
-  lecture_sessions: [SessionSchema], // Embed the array of lecture sessions
+const lecturerSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
 });
 
-// Create a model
-const Lecturer = mongoose.model('Lecturer', LecturerSchema);
+const Lecturer = mongoose.model('Lecturer', lecturerSchema);
 
 module.exports = Lecturer;
+

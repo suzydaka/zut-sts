@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .login-container {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            max-width: 150px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeMKOfFMApCTiznzRPMGDZ0AduVElnNY6bfkENUEwGx9GRjnlVnPITsd7eLAQOBS0mYLE&usqp=CAU" alt="Logo" class="logo-img">
+        </div>
+        <h4 class="text-center text-secondary mb-4">ZUT - Student Tracking System</h4>
+        <form id="loginForm"> <!-- Add an ID to the form for easier reference -->
+            <div class="form-group">
+                <input type="email" placeholder="Email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+        </form>
+
+        <hr>
+        <div style="display: flex; align-items: center; justify-content: space-evenly;">
+            <a href="#" data-toggle="modal" data-target="#signupModal">I don't have an Account</a>
+            <a href="#" data-toggle="modal" data-target="#forgotPasswordModal">Forgot Password</a>
+        </div>
+
+        <!-- Sign-Up Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Sign-Up Form Fields -->
+                <form id="signForm">
+                    <div class="form-group">
+                        <label for="lecturerName">Lecturer Name</label>
+                        <input type="text" class="form-control" id="lecturerName" name="lecturerName" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="emailSignUp" name="emailSignUp" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="passwordSignUp" name="passwordSignUp" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" class="form-control" id="confirmPasswordSignUp" name="confirmPasswordSignUp" placeholder="Confirm Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" role="dialog" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Forgot Password</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Forgot Password Form Fields -->
+                <form>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const form = event.target;
+            const email = form.email.value;
+            const password = form.password.value;
+
+            // console.log(email, password);
+
+            try {
+                const response = await fetch('http://localhost:5000/login', { // Replace with your login route
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                if (response.ok) {
+                    // Successful login, you can redirect to the dashboard or perform other actions here
+                    const responseData = await response.json();
+                    
+                    if(responseData.status == 'success'){
+                        console.log('Login successful: ', email);
+                        window.location.href = '/dashboard?userId=' + responseData.userId;
+                    }
+                } else {
+                    // Handle login failure here, display an error message, etc.
+                    console.error('Login failed');
+                }
+            } catch (error) {
+                console.error('An error occurred', error);
+            }
+        });
+
+        document.getElementById('signForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const form = event.target;
+            let password, email, name;
+
+            if (form.passwordSignUp.value === form.confirmPasswordSignUp.value) {
+                password = form.passwordSignUp.value;
+                email = form.emailSignUp.value;
+                name = form.lecturerName.value;
+            } else {
+                console.log('Passwords must match!!');
+                return;
+            }
+
+            try {
+                console.log('account creation start: ', email);
+                const response = await fetch('http://localhost:5000/signup', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email, name, password })
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    const userId = responseData.userId;
+                    console.log('Sign up success: ', email, 'User ID: ', userId);
+
+                    // Redirect to the dashboard or any other page with the obtained userId
+                    window.location.href = `/dashboard?userId=${userId}`;
+                }
+            } catch (error) {
+                console.log('Something went wrong...', error);
+            }
+        });
+
+    </script>
+
+
+</body>
+</html>

@@ -53,6 +53,24 @@
     <div class="container">
       <h1>ZUT - Student Tracking System</h1>
       <hr />
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h4 class="text-secondary">Hi, <%= user.name %></h4>
+        <a
+          id="logout-link" 
+          style="
+            text-decoration: none;
+            color: #ff2a2a;
+            padding: 10px;
+            cursor: pointer;
+          "
+        >
+          Log out
+          <img width="20px" height="20px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJmbCQXP1W3mbNjsjDfizbWuuoUUPgf8BGrg&usqp=CAU" alt="logout">
+        </a>
+      </div>
+      
+      
+      <hr/>
 
       <div
         style="
@@ -593,6 +611,13 @@
         document.getElementById("generate-qr").addEventListener("click", generateQRCode);
     </script>
 <!-- QR CODE REGISTER STUDENT START HERE -->
+
+<script>
+  document.getElementById('logout-link').addEventListener('click', function () {
+  window.location.href = '/'; // Replace '/login' with the actual URL of your login page.
+});
+
+</script>
 
   </body>
 </html>
