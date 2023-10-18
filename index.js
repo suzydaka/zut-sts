@@ -3,10 +3,11 @@ const mongoose = require("mongoose");
 const path = require("path"); // Require the 'path' module
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const multer = require('multer');
 require("dotenv").config();
 const Lecturer = require("./database/models/Lecturer");
 const Session = require("./database/models/Session");
+const Student = require("./database/models/Student");
 
 const app = express();
 
@@ -33,6 +34,12 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(cors({}));
+
+// Configure multer for handling file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
 
 app.get('/', (req, res) => {
   res.render('login');
@@ -148,5 +155,41 @@ app.post('/add-session', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error creating lecture session' });
+  }
+});
+
+// Define a POST route for '/register-student'
+app.post('/register-student', upload.single('qrCode'), async (req, res) => {
+
+  console.log('Student Registering: ', req.body)
+
+  try {
+    // Access form fields from req.body
+    const studentId = req.body.studentId;
+    const fullNames = req.body.fullNames;
+    const yearOfStudy = req.body.yearOfStudy;
+    const programOfStudy = req.body.programOfStudy;
+
+    // Access the uploaded image (qrCode) from req.file
+    const qrCodeImageBuffer = req.file.buffer;
+
+    // Create a new Student document
+    const student = new Student({
+      sid: studentId,
+      fullname: fullNames,
+      year_of_study: yearOfStudy,
+      programme_of_study: programOfStudy,
+      qr_code: qrCodeImageBuffer.toString('base64'), // Convert the image Buffer to base64
+    });
+
+    // Save the new Student document to the MongoDB collection
+    await student.save();
+
+    // Send a response indicating success
+    res.status(200).json({ message: 'Student registered successfully' });
+  } catch (error) {
+    // Handle any errors that may occur during processing
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred' });
   }
 });
