@@ -193,3 +193,4 @@ app.post('/register-student', upload.single('qrCode'), async (req, res) => {
     res.status(500).json({ error: 'An error occurred' });
   }
 });
+
