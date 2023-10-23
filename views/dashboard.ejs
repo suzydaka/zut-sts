@@ -491,7 +491,8 @@
               <form id="statusForm">
                 <div class="form-group">
                   <input
-                    id="student-id"
+                    id="studentIdStatus"
+                    name="studentIdStatus"
                     type="text"
                     placeholder="Student ID (2010118)"
                     class="form-control"
@@ -506,11 +507,116 @@
                   check Status
                 </button>
                 </div>
-                
               </form>
+
+              <script>
+
+                let currentStudent = null;
+
+                document.getElementById('statusForm').addEventListener('submit', async (event) => {
+                  event.preventDefault();
+                  document.getElementById('loadingStatus').innerHTML= `<h4 class="text-warning">fetching student status...</h4><img width="100%" height="100%" src="https://ligas.io/assets/images/loader2.gif" alt="">`;
+                  document.getElementById('loadingStatus').style.visibility = 'visible';
+                  document.getElementById('sendAlertBtn').className = 'btn btn-warning px-5';
+                      document.getElementById('sendAlertBtn').innerText = 'Send Alert';
+                  const sid = document.getElementById('studentIdStatus').value;
+
+
+                  try {
+                    
+
+                    console.log('fetching Student Status: ', sid);
+
+                    const response = await fetch('http://localhost:5000/check-status', {
+                      method: 'POST',
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({sid})
+                    });
+
+                    if(response.ok){
+
+                      const data = await response.json();
+                      console.log(data);
+                      currentStudent = data;
+
+                      document.getElementById('loadingStatus').innerHTML = ``;
+                      document.getElementById('loadingStatus').style.visibility = 'hidden'
+                      document.getElementById('studentStatus').style.visibility = 'visible';
+
+
+                      // CLEAR STUFF
+                      document.getElementById('status-student-id').innerHTML = '';
+                      document.getElementById('status-full-name').innerHTML = '';
+                      document.getElementById('status-pog').innerHTML = '';
+
+                      document.getElementById('status-student-id').innerHTML = data.sid;
+                      document.getElementById('status-full-name').innerHTML = data.fullname;
+                      document.getElementById('status-pog').innerHTML = data.programme_of_study;
+                      randomizeProgressBars();
+
+
+                    }
+                    
+                  } catch (error) {
+                      console.log('Something went wrong: ', error);
+                      document.getElementById('checkStatusBtn').className = 'btn btn-danger px-5';
+
+                  }
+
+                });
+
+                const sendSMS = async () => {
+                  document.getElementById('sendAlertBtn').className = 'btn btn-secondary px-5';
+                  document.getElementById('sendAlertBtn').innerText = 'Loading!';
+
+                  console.log('Sedning SMS ', currentStudent);
+
+                  try{
+
+                    const response = await fetch('http://localhost:5000/send-alert', {
+                      method: 'POST',
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify(currentStudent)
+                    });
+
+                    if(response.ok){
+                      console.log('SMS Sent!', currentStudent);
+                      document.getElementById('sendAlertBtn').className = 'btn btn-success px-5';
+                      document.getElementById('sendAlertBtn').innerText = 'Alert Sent!';
+                    }
+
+                  }catch(err){
+                    console.log(err);
+                    document.getElementById('sendAlertBtn').className = 'btn btn-danger px-5';
+                      document.getElementById('sendAlertBtn').innerText = 'Alert NOT Sent!';
+                  }
+                };
+
+                function randomizeProgressBars() {
+                      // Get the progress bar elements
+                      var tuitionProgress = document.getElementById("tuitionProgress");
+                      var lectureProgress = document.getElementById("lectureProgress");
+
+                      // Generate random values between 0 and 100
+                      var randomTuitionValue = Math.floor(Math.random() * 101);
+                      var randomLectureValue = Math.floor(Math.random() * 101);
+
+                      // Update the progress bars with the random values
+                      tuitionProgress.style.width = randomTuitionValue + "%";
+                      tuitionProgress.textContent = randomTuitionValue + "%";
+
+                      lectureProgress.style.width = randomLectureValue + "%";
+                      lectureProgress.textContent = randomLectureValue + "%";
+                  }
+              </script>
+
             </div>
 
-            <div style="width: 60%">
+            <div style="width: 60%,">
               <div
                 id="StatusContainer"
                 style="
@@ -519,23 +625,30 @@
                   border: 1px solid rgb(216, 216, 216);
                 "
               >
-                <div>
+              <!-- <div class="initialStatus"></div> -->
+              <div id="loadingStatus" style="visibility: hidden; width: 100%;">
+</div>
+                <div id="studentStatus" style="visibility: hidden; width: 500px;">
                   <h4 class="text-success text-center my-3">Student Status</h4>
                   <hr />
                   
                     <div class="px-5 py-2">
-                        <p><strong>Student ID:</strong> 2010118</p>
-                        <p><strong>Full Names:</strong> Kabalwe Njato</p>
-                        <p><strong>Programme of Study:</strong> BIT</p>
-                        <p><strong>Tuition Fee Status:</strong> <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">70%</div>
-                        </div></p>
-                        <p><strong>Lecture sessions Attended:</strong> <div class="progress">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">85%</div>
-                        </div></p>
+                        <p>Student ID:<strong id="status-student-id">xxxxxxxxxxxxxxxxx</strong></p>
+                        <p>Full Names:<strong id="status-full-name">xxxxxxxxxxxxxxxxx</strong></p>
+                        <p>Programme of Study:<strong id="status-pog">xxxxxxxxxxxxxxxxx</strong></p>
+
+                        <!-- RANDOM  LEVELS -->
+                        <p><strong>Tuition Fee Status:</strong> 
+                          <div class="progress">
+                              <div id="tuitionProgress" class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                          </div>
+                      </p>
+                      <p><strong>Lecture sessions Attended:</strong> 
+                          <div class="progress">
+                              <div id="lectureProgress" class="progress-bar bg-info" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0</div>
+                          </div>
+                      </p>
                     </div>
-                
-                </div>
                 <hr />
                 <div
                   style="
@@ -545,9 +658,11 @@
                     justify-content: center;
                   "
                 >
-                  <button class="btn btn-warning px-5">Send Alert</button>
+                  <button class="btn btn-warning px-5" id="sendAlertBtn" onclick="sendSMS()" >Send Alert</button>
                 </div>
                 <hr />
+                </div>
+                
               </div>
             </div>
           </div>

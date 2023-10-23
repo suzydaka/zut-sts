@@ -11,6 +11,10 @@ const Student = require("./database/models/Student");
 
 const app = express();
 
+const accountSid = 'AC90359268307fb32b00bf66c058b6d8ef';
+const authToken = 'd274535cc3f8ce3d9471f9f93ff09f1e';
+const client = require("twilio")(accountSid, authToken);
+
 // Connect to your MongoDB database
 mongoose.connect(process.env.DB_CONNECT_URI, {
   useNewUrlParser: true,
@@ -194,3 +198,64 @@ app.post('/register-student', upload.single('qrCode'), async (req, res) => {
   }
 });
 
+app.post('/send-alert', (req, res) => {
+  const { sid, fullname, programme_of_study, year_of_study } = req.body;
+
+  // Format the message with line breaks for readability
+  const message = `
+  -----------------------
+  ZUT - STS (ALERT SYSTEM)
+  -----------------------
+    Student ID: ${sid}
+    Full Name: ${fullname}
+    Programme of Study: ${programme_of_study}
+    Year of Study: ${year_of_study}
+    ATTENDANCE: 62%
+    TUITION FEE: 40%
+  -------------------------
+  THIS ALERT SERVES TO INFORM YOU TO CHECK YOUR TUITION FEE AND ATTENDANCE`;
+
+  console.log('Message body:', message);
+
+  sendSMS('+260969314181');
+
+  function sendSMS(phoneNumber) {
+    // TWILIO SEND SMS
+    client.messages
+      .create({
+        body: message,
+        from: "+15413924265",
+        to: phoneNumber,
+      })
+      .then((message) => {
+        console.log(message.sid, "SMS Sent to:", phoneNumber);
+        res.json({ message: 'SMS Sent!' });
+      })
+      .catch((error) => {
+        console.error("Error sending SMS:", error);
+        res.json({ message: 'SMS Failed!' });
+      });
+  }
+});
+
+
+app.post('/check-status', async (req, res) => {
+  console.log('getting student Status: ', req.body);
+  const {sid} = req.body;
+
+  try{
+    const student = await Student.findOne({'sid': sid});
+
+    if(student){
+      console.log("User Data Fetched: ", student);
+      res.status(200).json(student);
+    }else{
+      res.status(404).json({ message: 'Student dosent Exist!' });
+    }
+
+  }catch(error){
+    console.log(error);
+    res.status(500);
+  }
+
+});
