@@ -172,6 +172,7 @@ app.post('/register-student', upload.single('qrCode'), async (req, res) => {
     const studentId = req.body.studentId;
     const fullNames = req.body.fullNames;
     const yearOfStudy = req.body.yearOfStudy;
+    const course = req.body.course;
     const programOfStudy = req.body.programOfStudy;
 
     // Access the uploaded image (qrCode) from req.file
@@ -182,6 +183,7 @@ app.post('/register-student', upload.single('qrCode'), async (req, res) => {
       sid: studentId,
       fullname: fullNames,
       year_of_study: yearOfStudy,
+      course: course,
       programme_of_study: programOfStudy,
       qr_code: qrCodeImageBuffer.toString('base64'), // Convert the image Buffer to base64
     });
@@ -238,7 +240,6 @@ app.post('/send-alert', (req, res) => {
   }
 });
 
-
 app.post('/check-status', async (req, res) => {
   console.log('getting student Status: ', req.body);
   const {sid} = req.body;
@@ -256,6 +257,25 @@ app.post('/check-status', async (req, res) => {
   }catch(error){
     console.log(error);
     res.status(500);
+}});
+
+app.post('/fetch-session', async (req, res) => {
+
+  const {lecturerId} = req.body;
+  console.log('fetching sessions: ', lecturerId);
+
+  try {
+
+    const sessions = await Session.find({'lecturer_id': lecturerId});
+
+    if(sessions){
+      res.status(200).json({sessions: sessions});
+      console.log('Session Data Fetched!', sessions);
+    }
+
+  } catch (error) {
+    res.status(401);
+    console.log('Error Fetching Session Data: ', error);
   }
 
 });

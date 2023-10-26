@@ -5,6 +5,7 @@ const StudentSchema = new mongoose.Schema({
   sid: String,
   fullname: String,
   year_of_study: String,
+  course: String,
   programme_of_study: String,
   qr_code: String,
 });
