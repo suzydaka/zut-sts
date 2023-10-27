@@ -213,7 +213,8 @@
 
             <div style="width: 40%; padding: 20px">
               <form id="markAttForm">
-                <!-- Year of Study -->
+                <div id="markAttFormFields">
+<!-- Year of Study -->
                 <div class="form-group">
                   <label for="yearOfStudy">Year of Study</label>
                   <select
@@ -250,15 +251,13 @@
                 <div class="form-group">
                   <label for="timeAndDay">Course Name</label>
                   <input
-                  id="course"
-                  type="text"
-                  name="course"
-                  placeholder="Course Name"
-                  class="form-control"
-                  
-                />
+                    id="course"
+                    type="text"
+                    name="course"
+                    placeholder="Course Name"
+                    class="form-control"
+                  />
                 </div>
-                
 
                 <!-- Time and Day -->
                 <div class="form-group">
@@ -270,7 +269,6 @@
                     name="timeAndDay"
                   />
                 </div>
-
 
                 <!-- Notes/Comments -->
                 <div class="form-group">
@@ -291,43 +289,41 @@
                   hidden
                   value="<%=user._id%>"
                 />
+                </div>
+                
 
                 <!-- Start Marking Button -->
-                <button
-                  id="startMarkingBtn"
-                  type="submit"
-                  class="btn btn-primary btn-lg"
-                >
+                <button id="startMarkingBtn" class="btn btn-primary btn-lg">
                   Start Marking
                 </button>
-              </form>
 
-              <div
-                id="sessionControls"
-                style="
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                  padding: 50px;
-                  display: none;
-                "
-              >
-                <button
-                  id="stopMarkingBtn"
-                  type="submit"
-                  class="btn btn-danger btn-lg my-5"
+                <div
+                  id="sessionControls"
+                  style="
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 50px;
+                    display: none;
+                  "
                 >
-                  Stop Attendance
-                </button>
+                  <button
+                    id="stopMarkingBtn"
+                    class="btn btn-danger btn-lg my-5"
+                  >
+                    Stop Attendance
+                  </button>
 
-                <button
-                  id="saveMarkingBtn"
-                  type="submit"
-                  class="btn btn-success btn-lg my-5"
-                >
-                  Save Attendance
-                </button>
+                  <button
+                    id="saveMarkingBtn"
+                    type="submit"
+                    class="btn btn-success btn-lg my-5"
+                  >
+                    Save Attendance
+                  </button>
+               </form> 
               </div>
+              
             </div>
 
             <div style="width: 60%">
@@ -781,15 +777,13 @@
             <div class="accordion accordion-flush" id="accordionFlushExample">
               <div
                 style="
-                
-                flex-direction: row;
+                  flex-direction: row;
                   width: 100%;
                   justify-content: space-between;
                   align-items: center;
                   margin: 0 10%;
                 "
               >
-
                 <div>
                   <button
                     class="btn btn-success btn-lg"
@@ -807,7 +801,6 @@
                     alt=""
                   />
                 </div>
-
               </div>
             </div>
           </div>
@@ -857,16 +850,31 @@
       const markAttForm = document.getElementById("markAttForm");
       const attSave = document.getElementById("attSave");
 
+      let attendeesArray = [];
+      let previousId = null;
+
+      startMarkingBtn.addEventListener('click', function (e) {
+        console.log('session started!...');
+        e.preventDefault();
+        document.getElementById('markAttFormFields').style.display = 'none';
+        startMarkingBtn.style.display = 'none';
+        scanner.style.display = "block";
+        sessionControls.style.display = "block";
+        
+      });
+
       stopMarkingBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        markAttForm.style.display = "block";
+        document.getElementById('markAttFormFields').style.display = 'block';
+        startMarkingBtn.style.display = 'block';
         scanner.style.display = "none";
         sessionControls.style.display = "none";
       });
 
       restartMarkingBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        markAttForm.style.display = "block";
+        document.getElementById('markAttFormFields').style.display = 'block';
+        startMarkingBtn.style.display = 'block'
         scanner.style.display = "none";
         sessionControls.style.display = "none";
         attSave.style.display = "none";
@@ -874,7 +882,9 @@
 
       saveMarkingBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        markAttForm.style.display = "none";
+        saveSession(e);
+        document.getElementById('markAttFormFields').style.display = 'none';
+        startMarkingBtn.style.display = 'none'
         scanner.style.display = "none";
         sessionControls.style.display = "none";
         attSave.style.display = "block";
@@ -882,46 +892,105 @@
 
       // Function to start QR code scanning
       function startQRScanner() {
-        const video = document.getElementById("qr-video");
-        const qrResult = document.getElementById("qr-result");
+  const video = document.getElementById("qr-video");
+  const qrResult = document.getElementById("qr-result");
 
-        const qrScanner = new Instascan.Scanner({ video: video });
-        qrScanner.addListener("scan", function (content) {
-          qrResult.innerHTML = `QR Code Content: ${content}`;
-        });
+  const qrScanner = new Instascan.Scanner({ video: video });
 
-        Instascan.Camera.getCameras().then(function (cameras) {
-          if (cameras.length > 0) {
-            qrScanner.start(cameras[0]);
-          } else {
-            alert("No cameras found on this device.");
-          }
-        });
+  let previousId = null;
+
+  qrScanner.addListener("scan", function (content) {
+    
+
+    if (previousId !== content) {
+      let contentAlreadyExists = false;
+
+      for (let i = 0; i < attendeesArray.length; i++) {
+        if (attendeesArray[i] === content) {
+          contentAlreadyExists = true;
+          break;
+        }
       }
+
+      if (!contentAlreadyExists) {
+        qrResult.innerHTML = `<h4 class="text-center text-success fw-bold">${content} Marked! | Next Student Please!</h4>`;
+        attendeesArray.push(content);
+      } else {
+        qrResult.innerHTML = `<h4 class="text-center text-danger fw-bold">ID Already marked!</h4>`;
+        console.log('Already Marked!: ', content);
+      }
+    }
+
+    previousId = content;
+    // qrResult.innerHTML = `<h4 class="text-center text-success fw-bold">${content} Marked! | Next Student Please!</h4>`;
+    console.log(attendeesArray);
+  });
+
+  Instascan.Camera.getCameras().then(function (cameras) {
+    if (cameras.length > 0) {
+      qrScanner.start(cameras[0]);
+    } else {
+      alert("No cameras found on this device.");
+    }
+  });
+}
 
       // Start QR code scanning when the page loads
       window.onload = startQRScanner;
 
       // <!-- OPENING LECTURE SESSION START HERE -->
 
-      document
-        .getElementById("markAttForm")
-        .addEventListener("submit", async (event) => {
-          event.preventDefault();
+      
+      let yearOfStudy = document.getElementById('yearOfStudy').value;
+let programOfStudy = document.getElementById('programOfStudy').value;
+let course = document.getElementById('course').value;
+let timeAndDay = document.getElementById('timeAndDay').value;
+let notes = document.getElementById('notes').value;
 
-          const form = event.target;
+document.getElementById('yearOfStudy').addEventListener('change', (e) => {
+  yearOfStudy = e.target.value;
+  console.log(yearOfStudy);
+});
+
+document.getElementById('programOfStudy').addEventListener('change', (e) => {
+  programOfStudy = e.target.value;
+  console.log(programOfStudy);
+});
+
+document.getElementById('course').addEventListener('input', (e) => {
+  course = e.target.value;
+  console.log(course);
+});
+
+document.getElementById('timeAndDay').addEventListener('change', (e) => {
+  timeAndDay = e.target.value;
+  console.log(timeAndDay);
+});
+
+document.getElementById('notes').addEventListener('input', (e) => {
+  notes = e.target.value;
+  console.log(notes);
+});
+
+
+
+        const saveSession = async (event) => {
+          event.preventDefault();
+          console.log('form Submitted: (Saving Session)');
+        
 
           // Extract form data
           const sessionData = {
-            year_of_study: form.yearOfStudy.value,
-            programme_of_study: form.programOfStudy.value,
-            time_and_date: form.timeAndDay.value,
-            notes_or_comments: form.notes.value,
-            attendees: ["2010100", "2010118"],
-            lecturer_id: form.userId.value,
+            year_of_study: yearOfStudy,
+            programme_of_study: programOfStudy,
+            course: course,
+            time_and_date: timeAndDay,
+            notes_or_comments: notes,
+            attendees: attendeesArray,
+            lecturer_id: document.getElementById('userId').value,
           };
 
-          console.log("saving lecture session (Client): ", sessionData);
+          console.log("saving lecture session (Client): ", attendeesArray);
           try {
             const response = await fetch("http://localhost:5000/add-session", {
               method: "POST",
@@ -933,9 +1002,7 @@
 
             if (response.ok) {
               alert("Lecture session created successfully!");
-              markAttForm.style.display = "none";
-              scanner.style.display = "block";
-              sessionControls.style.display = "block";
+              
             } else {
               alert("Error creating lecture session.");
             }
@@ -943,7 +1010,7 @@
             console.error(error);
             alert("An error occurred while creating the lecture session.");
           }
-        });
+        };
 
       // <!-- OPENING LECTURE SESSION END HERE -->
     </script>
@@ -1000,10 +1067,7 @@
             "programOfStudy",
             document.getElementById("programOfStudy").value
           );
-          formData.append(
-            "course",
-            document.getElementById("course").value
-          );
+          formData.append("course", document.getElementById("course").value);
 
           // Create a Blob from the Data URL
           fetch(qrCodeDataUrl)
