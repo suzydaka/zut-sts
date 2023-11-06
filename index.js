@@ -11,8 +11,8 @@ const Student = require("./database/models/Student");
 
 const app = express();
 
-const accountSid = 'AC90359268307fb32b00bf66c058b6d8ef';
-const authToken = 'd274535cc3f8ce3d9471f9f93ff09f1e';
+const accountSid = 'ACa8da457533e2e1ebdad97e4f54042c86';
+const authToken = '76a70b74fd098d61b03d405b6c4e3a90';
 const client = require("twilio")(accountSid, authToken);
 
 // Connect to your MongoDB database

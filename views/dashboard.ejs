@@ -241,23 +241,24 @@
                     <option value="BIT">BIT</option>
                     <option value="BSE">BSE</option>
                     <option value="BICT">BICT</option>
-                    <option value="BBA">BBA</option>
-                    <option value="BeEng">BeEng</option>
-                    <option value="BSC">BSC</option>
+                    <option value="BBA">BSC</option>
+                    
                   </select>
                 </div>
 
                 <!-- COURSENAME OPTIONS DEPEND ON THE PROGRAM OF STUDY AND YEAR -->
                 <div class="form-group">
-                  <label for="timeAndDay">Course Name</label>
-                  <input
-                    id="course"
-                    type="text"
-                    name="course"
-                    placeholder="Course Name"
+                  <label for="course">Course Name</label>
+                  <select
                     class="form-control"
-                  />
+                    id="course"
+                    name="name"
+                  >
+                    <option value="-">Select Program and Year</option>
+                    
+                  </select>
                 </div>
+
 
                 <!-- Time and Day -->
                 <div class="form-group">
@@ -947,15 +948,202 @@ let course = document.getElementById('course').value;
 let timeAndDay = document.getElementById('timeAndDay').value;
 let notes = document.getElementById('notes').value;
 
+let courses = [
+  {
+    program: 'BIT',
+    year: 1,
+    courses: [
+      'ICT 1100 Introduction IT',
+      'BIT 1111 Communication Skills',
+      'BIT 1120 Mathematics',
+      'BIT 1160 Intro to SAD',
+      'ICT 1110 Programming With C++',
+      'BIT 1140 Intro data comm. and networks',
+      'BIT 1130 EE',
+    ],
+  },
+  {
+    program: 'BIT',
+    year: 2,
+    courses: [
+      'BIT 2260 Fundamental of database',
+      'BIT 2220/ICT Computer Architecture',
+      'BIT 2250 Fundamental of Data Structure',
+      'BIT 2260 Fundamental of Database',
+      'BIT 2240 fundamental of Multimedia',
+      'BIT 2230 Interactive Web Development',
+    ],
+  },
+  {
+    program: 'BIT',
+    year: 3,
+    courses: [
+      'BIT 3301 Network Security and Firewalls',
+      'BIT 3300 Object-Oriented Programming',
+      'BIT 3360 Advanced Database System',
+      'ICT 3330 Computer Networking',
+      'BIT 3350 Research Methods',
+      'BIT 3310 Object-oriented sys. Analysis and design',
+    ],
+  },
+  {
+    program: 'BIT',
+    year: 4,
+    courses: [
+      'BIT 4440 Cloud Computing and Big Data',
+      'BIT 4400 Project',
+      'BIT 4421 Entrepreneurship',
+      'BIT 4430 Social and Ethical Issues',
+      'BIT 4410 Project Management',
+      'BIT 4030 - ENTERPRISE ARCHITECTURE',
+      'BIT 4411 eCommerce & ERP',
+    ],
+  },
+  {
+    program: 'BSC',
+    year: 1,
+    courses: [
+      'ICT 1100 Introduction IT',
+      'SEC 1111 Communication Skill',
+      'SEC 1120 Mathematics',
+      'SEC 1160 Introduction to System Analysis',
+      'SEC 1110 Programming with C++',
+      'SEC 1140 Intro to Data Comm.',
+      'SEC 1101 Intro to Information Security Fundamental',
+    ],
+  },
+  {
+    program: 'BSC',
+    year: 2,
+    courses: [
+      'SEC 2202 Cryptography',
+      'SEC 2201 Biometrics 1',
+      'SEC 2203 Forensics Tools & Techniques',
+      'SEC 2204 Operating system Concepts',
+      'SEC 2200 System Programming & Computer',
+      'SEC 2260 Fundamental of databases',
+      'SEC 2220 Computer Architecture & Organization',
+    ],
+  },
+  {
+    program: 'BSC',
+    year: 3,
+    courses: [
+      'SEC 2202 Networks Security & Farewalls',
+      'SEC 3303 Biometrics 2',
+      'SEC 3304 Data Recovery Techniques',
+      'SEC 3300 Object-Oriented Programming',
+      'SEC 3302 Computer Systems Security',
+      'SEC 3360 Advance Database System',
+    ],
+  },
+  {
+    program: 'BSC',
+    year: 4,
+    courses: [
+      'SEC 4400 Project',
+      'SEC 4400 Digital forensics & incident Response',
+      'SEC 4401 Risk Management & Information',
+      'SEC 4403 Ethics and Cyber Law',
+      'SEC 4401 Hacking, Countermeasure & Techniques',
+    ],
+  },
+  {
+    program: 'BSE',
+    year: 1,
+    courses: [
+      'ICT 1100 Introduction To IT',
+      'ICT 1110 Programming with C++',
+      'BIT 1111 Communication Skills',
+      'BIT 1120 Mathematics',
+      'BIT 1140 Introduction To Data Comm',
+      'BSE 1010 Soft Requirements Engineering',
+    ],
+  },
+  {
+    program: 'BSE',
+    year: 2,
+    courses: [
+      'BIT 2250 Fundamental Of Data Structure',
+      'BIT 2260 Fundamental Of Databases',
+      'BIT 2230 Interacting Web Development',
+      'BSE 2210 Software Design',
+      'BSE 2201 Software Engineering Foundation',
+    ],
+  },
+  {
+    program: 'BSE',
+    year: 3,
+    courses: [
+      'BSE 3350 Full Stack Web Development',
+      'BSE 3310 Software Design',
+      'BSE 2201 Software Engineering Management',
+      'BIT 3300 Object-Oriented Programming',
+      'BSE 3340 Mobile Application Development',
+      'BIT 3360 Advance Database Systems',
+    ],
+  },
+  {
+    program: 'BSE',
+    year: 4,
+    courses: [
+      'BSE 4400 Project',
+      'BSE 4050 Distributed Computer System',
+      'BSE 4040 Designing & Development Application',
+      'BSE 4421 Entrepreneurship',
+      'BSE Software Quality Engineering',
+      'BIT 4440 Cloud Computing & Big Data',
+    ],
+  },
+];
+
+
 document.getElementById('yearOfStudy').addEventListener('change', (e) => {
   yearOfStudy = e.target.value;
-  console.log(yearOfStudy);
+  console.log(document.getElementById('programOfStudy').value,yearOfStudy);
+
+  const courseSelect = document.getElementById('course');
+  courseSelect.innerHTML = ""; // Clear the existing options
+
+  for (let i = 0; i < courses.length; i++) {
+    if (courses[i].year == e.target.value) {
+      for (let j = 0; j < courses[i].courses.length; j++) {
+        const option = document.createElement("option");
+        option.value = courses[i].courses[j];
+        option.text = courses[i].courses[j];
+        courseSelect.appendChild(option);
+      }
+      return
+    }
+  }
 });
 
 document.getElementById('programOfStudy').addEventListener('change', (e) => {
   programOfStudy = e.target.value;
   console.log(programOfStudy);
+
+  const selectedYear = document.getElementById('yearOfStudy').value;
+
+  const courseSelect = document.getElementById('course');
+  courseSelect.innerHTML = ""; // Clear the existing options
+
+  for (let i = 0; i < courses.length; i++) {
+    if (courses[i].program == e.target.value) {
+
+      let coursesArray = courses[i].courses;
+      console.log(coursesArray);
+
+      for (let j = 0; j < coursesArray.length; j++) {
+        const option = document.createElement("option");
+        option.value = coursesArray[j];
+        option.text = coursesArray[j];
+        courseSelect.appendChild(option);
+      }
+      return
+    }
+  }
 });
+
 
 document.getElementById('course').addEventListener('input', (e) => {
   course = e.target.value;
