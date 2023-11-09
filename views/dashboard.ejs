@@ -536,6 +536,7 @@
 
               <script>
                 let currentStudent = null;
+                let attPer = null;
 
                 document
                   .getElementById("statusForm")
@@ -555,6 +556,7 @@
 
                     try {
                       console.log("fetching Student Status: ", sid);
+                      let lid = document.getElementById('userId').value;
 
                       const response = await fetch(
                         "http://localhost:5000/check-status",
@@ -563,14 +565,15 @@
                           headers: {
                             "Content-Type": "application/json",
                           },
-                          body: JSON.stringify({ sid }),
+                          body: JSON.stringify({ sid, lid}),
                         }
                       );
 
                       if (response.ok) {
                         const data = await response.json();
                         console.log(data);
-                        currentStudent = data;
+                        currentStudent = data.student;
+                        attPer = data.attendancePercentage;
 
                         document.getElementById("loadingStatus").innerHTML = ``;
                         document.getElementById(
@@ -588,11 +591,11 @@
                         document.getElementById("status-pog").innerHTML = "";
 
                         document.getElementById("status-student-id").innerHTML =
-                          data.sid;
+                          data.student.sid;
                         document.getElementById("status-full-name").innerHTML =
-                          data.fullname;
+                          data.student.fullname;
                         document.getElementById("status-pog").innerHTML =
-                          data.programme_of_study;
+                          data.student.programme_of_study;
                         randomizeProgressBars();
                       }
                     } catch (error) {
@@ -647,7 +650,7 @@
 
                   // Generate random values between 0 and 100
                   var randomTuitionValue = Math.floor(Math.random() * 101);
-                  var randomLectureValue = Math.floor(Math.random() * 101);
+                  var randomLectureValue = Math.floor(attPer);
 
                   // Update the progress bars with the random values
                   tuitionProgress.style.width = randomTuitionValue + "%";
@@ -889,6 +892,7 @@
         scanner.style.display = "none";
         sessionControls.style.display = "none";
         attSave.style.display = "block";
+        history.go(0);
       });
 
       // Function to start QR code scanning
@@ -1196,7 +1200,7 @@ document.getElementById('notes').addEventListener('input', (e) => {
             }
           } catch (error) {
             console.error(error);
-            alert("An error occurred while creating the lecture session.");
+            // alert("An error occurred while creating the lecture session.");
           }
         };
 
