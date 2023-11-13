@@ -10,9 +10,13 @@ const Session = require("./database/models/Session");
 const Student = require("./database/models/Student");
 
 const app = express();
+/*
 
-const accountSid = "ACa8da457533e2e1ebdad97e4f54042c86";
-const authToken = "76a70b74fd098d61b03d405b6c4e3a90";
+
+7WlBA4rZxcIGzloNirLt2x3YKHVlmOXH
+*/ 
+const accountSid = "ACf54a417f057a989ad57c4798c82cbe49";
+const authToken = "dd6eedd29899afc5b7cf6582113ff980";
 const client = require("twilio")(accountSid, authToken);
 
 // Connect to your MongoDB database
@@ -225,7 +229,7 @@ app.post("/send-alert", (req, res) => {
     client.messages
       .create({
         body: message,
-        from: "+15413924265",
+        from: "+18173304801",
         to: phoneNumber,
       })
       .then((message) => {
